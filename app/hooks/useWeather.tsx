@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { fetchWeatherApi } from "openmeteo";
-import { params, url } from "../utils";
+import { params, url } from "@/lib/utils";
 
 
 export const useWeather = (lat: number, lon: number) => {

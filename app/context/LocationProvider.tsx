@@ -13,7 +13,7 @@ export default function LocationProvider({ children }: { children: React.ReactNo
   useEffect(() => {
     const getLocation = () => {
       if (!navigator.geolocation) {
-        console.warn("Geolocation not supported. Using default.");
+        console.log("Geolocation not supported. Using default.");
         return;
       }
 
@@ -25,7 +25,7 @@ export default function LocationProvider({ children }: { children: React.ReactNo
           });
         },
         (error) => {
-          console.warn("Geolocation error:", error.message, "Using default location.");
+          console.log("Geolocation error:", error.message, "Using default location.");
         }
       );
     };
