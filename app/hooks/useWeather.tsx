@@ -2,16 +2,69 @@ import { useState, useEffect } from "react";
 import { fetchWeatherApi } from "openmeteo";
 import { params, url } from "@/lib/utils";
 
+export interface WeatherData {
+  time: Date;
+  temperature2m: number;
+  relativeHumidity2m: number;
+  apparentTemperature: number;
+  isDay: number;
+  windSpeed10m: number;
+  windDirection10m: number;
+  precipitation: number;
+  rain: number;
+  showers: number;
+  snowfall: number;
+  weatherCode: number;
+  cloudCover: number;
+}
+
+export interface DailyWeatherData {
+  time: Date[];
+  weatherCode: number[];
+  sunrise: Date[];
+  sunset: Date[];
+  daylightDuration: number[];
+  sunshineDuration: number[];
+  temperature2mMax: number[];
+  temperature2mMin: number[];
+  apparentTemperatureMax: number[];
+  apparentTemperatureMin: number[];
+  rainSum: number[];
+  showersSum: number[];
+  precipitationSum: number[];
+  snowfallSum: number[];
+  precipitationHours: number[];
+  precipitationProbabilityMax: number[];
+}
+
+export interface HourlyWeatherData {
+  time: Date[];
+  temperature2m: number[];
+  dewPoint2m: number[];
+  precipitationProbability: number[];
+  apparentTemperature: number[];
+  rain: number[];
+  weatherCode: number[];
+  surfacePressure: number[];
+  visibility: number[];
+  windSpeed10m: number[];
+  temperature80m: number[];
+  isDay: number[];
+  sunshineDuration: number[];
+}
 
 export const useWeather = (lat: number, lon: number) => {
-  const [weather, setWeather] = useState({});
-  const [hourlyWeather, setHourlyWeather] = useState({});
-  const [dailyWeather, setDailyWeather] = useState({});
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [hourlyWeather, setHourlyWeather] = useState<HourlyWeatherData | null>(
+    null
+  );
+  const [dailyWeather, setDailyWeather] = useState<DailyWeatherData | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
 
   const fetchWeather = async (lat: number, lon: number) => {
-
     try {
       setLoading(true);
       const responses = await fetchWeatherApi(url, params(lat, lon));
@@ -54,7 +107,7 @@ export const useWeather = (lat: number, lon: number) => {
                 1000
             )
         ),
-        weatherCode: daily.variables(0)!.valuesArray()!,
+        weatherCode: [...(daily.variables(0)!.valuesArray() ?? [])],
         sunrise: [...Array(sunrise.valuesInt64Length())].map(
           (_, i) =>
             new Date((Number(sunrise.valuesInt64(i)) + utcOffsetSeconds) * 1000)
@@ -63,19 +116,20 @@ export const useWeather = (lat: number, lon: number) => {
           (_, i) =>
             new Date((Number(sunset.valuesInt64(i)) + utcOffsetSeconds) * 1000)
         ),
-        daylightDuration: daily.variables(3)!.valuesArray()!,
-        sunshineDuration: daily.variables(4)!.valuesArray()!,
-        temperature2mMax: daily.variables(5)!.valuesArray()!,
-        temperature2mMin: daily.variables(6)!.valuesArray()!,
-        apparentTemperatureMax: daily.variables(7)!.valuesArray()!,
-        apparentTemperatureMin: daily.variables(8)!.valuesArray()!,
-        rainSum: daily.variables(9)!.valuesArray()!,
-        showersSum: daily.variables(10)!.valuesArray()!,
-        precipitationSum: daily.variables(11)!.valuesArray()!,
-        snowfallSum: daily.variables(12)!.valuesArray()!,
-        precipitationHours: daily.variables(13)!.valuesArray()!,
-        precipitationProbabilityMax: daily.variables(14)!.valuesArray()!,
+        daylightDuration: [...(daily.variables(3)!.valuesArray() ?? [])],
+        sunshineDuration: [...daily.variables(4)!.valuesArray() ?? []],
+        temperature2mMax: [...daily.variables(5)!.valuesArray() ?? []],
+        temperature2mMin: [...daily.variables(6)!.valuesArray() ?? []],
+        apparentTemperatureMax: [...daily.variables(7)!.valuesArray() ?? []],
+        apparentTemperatureMin: [...daily.variables(8)!.valuesArray() ?? []],
+        rainSum: [...daily.variables(9)!.valuesArray() ?? []],
+        showersSum: [...daily.variables(10)!.valuesArray() ?? []],
+        precipitationSum: [...daily.variables(11)!.valuesArray() ?? []],
+        snowfallSum: [...daily.variables(12)!.valuesArray() ?? []],
+        precipitationHours: [...daily.variables(13)!.valuesArray() ?? []],
+        precipitationProbabilityMax: [...daily.variables(14)!.valuesArray() ?? []],
       });
+
 
       setHourlyWeather({
         time: [
@@ -92,18 +146,20 @@ export const useWeather = (lat: number, lon: number) => {
                 1000
             )
         ),
-        temperature2m: hourly.variables(0)!.valuesArray()!,
-        dewPoint2m: hourly.variables(1)!.valuesArray()!,
-        precipitationProbability: hourly.variables(2)!.valuesArray()!,
-        apparentTemperature: hourly.variables(3)!.valuesArray()!,
-        rain: hourly.variables(4)!.valuesArray()!,
-        weatherCode: hourly.variables(5)!.valuesArray()!,
-        surfacePressure: hourly.variables(6)!.valuesArray()!,
-        visibility: hourly.variables(7)!.valuesArray()!,
-        windSpeed10m: hourly.variables(8)!.valuesArray()!,
-        temperature80m: hourly.variables(9)!.valuesArray()!,
-        isDay: hourly.variables(10)!.valuesArray()!,
-        sunshineDuration: hourly.variables(11)!.valuesArray()!,
+        temperature2m: [...(hourly.variables(0)?.valuesArray() ?? [])],
+        dewPoint2m: [...(hourly.variables(1)?.valuesArray() ?? [])],
+        precipitationProbability: [
+          ...(hourly.variables(2)?.valuesArray() ?? []),
+        ],
+        apparentTemperature: [...(hourly.variables(3)?.valuesArray() ?? [])],
+        rain: [...(hourly.variables(4)?.valuesArray() ?? [])],
+        weatherCode: [...(hourly.variables(5)?.valuesArray() ?? [])],
+        surfacePressure: [...(hourly.variables(6)?.valuesArray() ?? [])],
+        visibility: [...(hourly.variables(7)?.valuesArray() ?? [])],
+        windSpeed10m: [...(hourly.variables(8)?.valuesArray() ?? [])],
+        temperature80m: [...(hourly.variables(9)?.valuesArray() ?? [])],
+        isDay: [...(hourly.variables(10)?.valuesArray() ?? [])],
+        sunshineDuration: [...(hourly.variables(11)?.valuesArray() ?? [])],
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));

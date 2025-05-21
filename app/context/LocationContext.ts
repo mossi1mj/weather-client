@@ -1,13 +1,22 @@
 import { createContext, useContext } from "react";
 
-export type Coords = {
+export type City = {
+  id?: number;
+  name: string;
   lat: number;
   lon: number;
+  country: string;
+  admin1?: string;
 };
 
-export const LocationContext = createContext<Coords>({
-  lat: 42.3314,  // Default: Detroit
-  lon: -83.0458,
+export type LocationContextType = {
+  city: City | null;
+  setCity: React.Dispatch<React.SetStateAction<City | null>>;
+};
+
+export const LocationContext = createContext<LocationContextType>({
+  city: null,
+  setCity: () => {},
 });
 
 export const useLocation = () => useContext(LocationContext);

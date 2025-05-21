@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Merriweather, JetBrains_Mono} from "next/font/google";
+import { Inter, Merriweather, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import LocationProvider from "./context/LocationProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -11,7 +12,7 @@ const inter = Inter({
 const marriweather = Merriweather({
   variable: "--font-merriweather",
   subsets: ["latin"],
-  weight: "300"
+  weight: "300",
 });
 
 const jetBrainsMono = JetBrains_Mono({
@@ -37,11 +38,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <LocationProvider>
-      <body
-        className={`${inter.variable} ${marriweather.variable} ${jetBrainsMono.variable} antialiased`}
-      >
-        {children} 
-      </body>
+        <body
+          className={`${inter.variable} ${marriweather.variable} ${jetBrainsMono.variable} antialiased`}
+        >
+          {children}
+          <Toaster />
+        </body>
       </LocationProvider>
     </html>
   );

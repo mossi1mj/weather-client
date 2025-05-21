@@ -2,36 +2,18 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-// function Card({ className, ...props }: React.ComponentProps<"div">) {
-//   return (
-//     <div
-//       data-slot="card"
-//       className={cn(
-//         "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
-//         className
-//       )}
-//       {...props}
-//     />
-//   )
-// }
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card"
       className={cn(
-        "rounded-xl p-6 shadow-lg backdrop-blur-xl", // Make the card transparent in light and dark mode
-        "bg-secondary/80 dark:bg-white/5",
-        "border border-black/40 dark:border-white",
-        "text-black dark:text-white",
-        "opacity-30 transition-opacity duration-300",
-        "hover:opacity-40",
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
         className
       )}
       {...props}
     />
-  );
+  )
 }
-
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
