@@ -12,11 +12,13 @@ export type City = {
 export type LocationContextType = {
   city: City | null;
   setCity: React.Dispatch<React.SetStateAction<City | null>>;
+  fetchCurrentLocation: () => void;
 };
 
 export const LocationContext = createContext<LocationContextType>({
   city: null,
   setCity: () => {},
+  fetchCurrentLocation: () => {},
 });
 
 export const useLocation = () => useContext(LocationContext);
